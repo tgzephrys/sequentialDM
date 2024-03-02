@@ -29,6 +29,38 @@ void fill() {
     singleItem.clear();
     addValid.clear();
 
+    ifstream fileStream;
+
+    fileStream.open("../tb_battle_info.txt", ios::in);
+//    fileStream.open("../seqActivities.txt", ios::in);
+
+    //现在开始取最后一行看有多少个事务
+    fileStream.seekg(-1, fileStream.end);
+    while(fileStream.peek() == '\n') {  //规避结尾空行
+        fileStream.seekg(-1, fileStream.cur);
+    }
+
+    while(fileStream.peek() != '\n') {
+        fileStream.seekg(-1, fileStream.cur);
+    }
+
+    fileStream.seekg(1, fileStream.cur);
+    string lastLine;
+    getline(fileStream, lastLine);
+
+    vector<string> vec = split(lastLine, ',');
+    TRANSACTION_NUM = stoi(vec[1]);
+
+    all2 = vector<Node> (TRANSACTION_NUM);
+
+    fileStream.clear();
+    fileStream.seekg(fileStream.beg);
+
+    string line;
+    while (getline(fileStream, line) && !line.empty()) {
+
+    }
+
     char ch = 0;
     while (true) {
 

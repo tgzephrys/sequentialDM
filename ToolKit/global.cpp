@@ -1,3 +1,4 @@
+#include <cstring>
 #include "global.h"
 #include "../Model/Complete.h"
 
@@ -6,6 +7,7 @@ map<char, int> singleItem;
 map<char, int> addValid;
 vector<char> freq1tem;
 Node *all[5000] = {};
+vector<Node> all2;
 Complete *rulesHead = nullptr;
 Complete *rulesTail = nullptr;
 
@@ -19,4 +21,13 @@ int calcRelation(seqJob *o, seqJob *n) {
     } else if (n->startTime == o->endTime)
         return MEET;
     else return FOLLOW;
+}
+
+vector<string> split(string& str, char delim) {
+    vector<string> vec;
+    string result;
+    stringstream origin(str);
+    while(getline(origin, result, delim))
+        vec.push_back(result);
+    return vec;
 }
