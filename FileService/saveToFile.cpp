@@ -3,7 +3,8 @@
 
 void saveRules() {
     fstream file = nullptr;
-    file.open("../all_rules.txt", ios::out | ios::trunc);
+//    file.open("../all_rules.txt", ios::out | ios::trunc);
+    file.open("../all_rules1.txt", ios::out | ios::trunc);
 
     Complete *p = rulesHead;
     while (p != nullptr) {
@@ -18,9 +19,9 @@ void saveRules() {
                     maxSup = (*oneRule)[i].sup;
 
             if (i == 0) {
-                file << (*oneRule)[i].name;
+                file << (*oneRule)[i].name1;
             } else {
-                file << transRelation((*oneRule)[i].relation) << (*oneRule)[i].name;
+                file << transRelation((*oneRule)[i].relation) << (*oneRule)[i].name1;
             }
         }
         double conf = 0;

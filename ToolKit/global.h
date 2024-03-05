@@ -18,19 +18,17 @@ using namespace std;
 #define CONTAIN 4
 #define MATCH 5
 #define LINE 0.5  //置信度
+#define SUP_LINE 0.5  //支持度
 #define CONF_LINE 0.5
-#define SUP_LINE 0.5
 
 extern int TRANSACTION_NUM;
-extern map<char, int> singleItem;
-extern map<char, int> addValid;
-extern vector<char> freq1tem;
-extern Node *all[5000];
+extern vector<string> freqItems;
 extern vector<Node> all2;
 extern Complete *rulesHead;   //找到的规则是全局的
 extern Complete *rulesTail;   //找到的规则是全局的
 
-int calcRelation(seqJob* oJob, seqJob* nJob);
+int calcRelation(seqJob & oJob, seqJob & nJob);
+int calcRelation(seqJob * oJob, seqJob * nJob);
 
 vector<string> split(string&, char);
 

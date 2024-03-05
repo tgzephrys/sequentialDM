@@ -3,12 +3,12 @@
 
 
 #include "seqJob.h"
+#include <vector>
+using namespace std;
 
 class Node {
 public:
-    int relation = 0;
-    seqJob* aTransaction[100] = {};
-    int num = 0;
+    vector<seqJob> aTransactions;
 };
 
 

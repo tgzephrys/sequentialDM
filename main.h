@@ -1,8 +1,8 @@
 #ifndef SEQUENTIALDM_MAIN_H
 #define SEQUENTIALDM_MAIN_H
 
-void doDM(char c);
-void findFirstNode(DataHead* mining, char c);
+void doDM(string name);
+void findFirstNode(DataHead* mining, string name);
 Connect *wantCandiItem(DataHead *mining);
 void chooseNext(Connect *head, DataHead *mining);
 void addNewRule (DataHead *mining);
