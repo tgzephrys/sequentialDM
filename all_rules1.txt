@@ -1,0 +1,5 @@
+AdamfollowsAdamfollowsCathy   conf: 1
+AdamfollowsBobfollowsBob   conf: 0.666667
+AdamfollowsBobfollowsCathy   conf: 0.666667
+BobfollowsAdamfollowsCathy   conf: 1
+BobfollowsBobfollowsCathy   conf: 0.666667
