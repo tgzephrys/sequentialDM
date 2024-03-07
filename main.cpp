@@ -23,7 +23,7 @@ void doDM(string name) {
 //    map<Connect, double> candiItems;
 
     map<string, bool> confirm;
-    map<string, double> candiItems;
+    map<string, int> candiItems;
 
     for (int i = 0; i < TRANSACTION_NUM; ++i) {
         //vector<Connect> *v = &mining[i].miningList;
