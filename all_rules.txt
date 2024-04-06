@@ -1,8 +1,4 @@
 AfollowsAfollowsC   conf: 1
-AfollowsBfollowsBfollowsC   conf: 0.5
-AcontainsBfollowsB   conf: 1
-BfollowsAfollowsB   conf: 0.666667
-BfollowsAfollowsC   conf: 0.666667
-BfollowsAcontainsBfollowsB   conf: 0.666667
-BfollowsBfollowsB   conf: 0.5
-BfollowsBfollowsC   conf: 0.5
+AfollowsBfollowsBfollowsC   conf: 0.666667
+BfollowsAfollowsC   conf: 1
+BfollowsBfollowsC   conf: 0.666667

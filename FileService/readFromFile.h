@@ -11,6 +11,4 @@ using namespace std;
 
 void fill();
 
-void addItemOccNum(char name);
-
 #endif

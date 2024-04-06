@@ -11,10 +11,10 @@
 #include "Model/Complete.h"
 #include "FileService/saveToFile.h"
 
-void doDM(char c) {
+void doDM(string name) {
 
     DataHead mining[TRANSACTION_NUM];  //记录正在查找的情况的数组
-    findFirstNode(mining, c);
+    findFirstNode(mining, name);
 
     Connect *newHead = nullptr;
     Connect *pHead = nullptr;
@@ -23,21 +23,21 @@ void doDM(char c) {
 //    map<Connect, double> candiItems;
 
     map<string, bool> confirm;
-    map<string, double> candiItems;
+    map<string, int> candiItems;
 
     for (int i = 0; i < TRANSACTION_NUM; ++i) {
         //vector<Connect> *v = &mining[i].miningList;
         //int index = mining[i].miningList[0].i;
 
-        for (int j = 0; j < all[i]->num; ++j) {
-            if (all[i]->aTransaction[j]->name == mining[i].miningList[0].name) {
-                Connect *p = all[i]->aTransaction[j]->cp;
+        for (int j = 0; j < all2[i].aTransactions.size(); ++j) {
+            if (all2[i].aTransactions[j].name1 == mining[i].miningList[0].name1) {
+                Connect *p = all2[i].aTransactions[j].cp;
                 while (p != nullptr) {
 //                Connect connect;
 //                connect.name = p->name;
 //                connect.relation = p->relation;
 
-                    string connect = to_string(p->relation) + p->name;
+                    string connect = to_string(p->relation) + p->name1;
 
                     if (confirm.count(connect) == 0) {
                         confirm[connect] = true;
@@ -51,6 +51,7 @@ void doDM(char c) {
 
                     confirm[connect] = false;
                     p = p->next;
+                    cout << 54 << endl;
                 }
             }
         }
@@ -60,15 +61,15 @@ void doDM(char c) {
     }
 
     for (auto &iterator: candiItems) {
-        if ((iterator.second / TRANSACTION_NUM) >= 0.5) {
+        if ((iterator.second / TRANSACTION_NUM) >= SUP_LINE) {
             Connect *newC = new Connect;
             //newC->relation = iterator.first.relation;
             char re = *(iterator.first.data());
             newC->relation = atoi(&re);
 
             //newC->name = iterator.first.name;
-            char na = *(iterator.first.data() + 1);
-            newC->name = na;
+
+            newC->name1 = iterator.first.substr(1);
             newC->sup = iterator.second / TRANSACTION_NUM;
             if (newHead == nullptr) {
                 newHead = newC;
@@ -83,20 +84,31 @@ void doDM(char c) {
     chooseNext(newHead, mining);
 }
 
-void findFirstNode(DataHead *mining, char c) {
+void findFirstNode(DataHead *mining, string name) {
     for (int i = 0; i < TRANSACTION_NUM; ++i) {
-        int num = all[i]->num;    //每行事务集的项集数量
+        int num = all2[i].aTransactions.size();    //每行事务集的项集数量
 
         for (int j = 0; j < num; ++j) {
-            if (all[i]->aTransaction[j]->name == c) {
+            if (all2[i].aTransactions[j].name1 == name) {
                 Connect cNode;
                 cNode.i = j;
                 cNode.sup = 0;
-                cNode.name = c;
+                cNode.name1 = name;
                 mining[i].miningList.push_back(cNode);
                 break;
             }
         }
+
+//        for (int j = 0; j < num; ++j) {
+//            if (all[i]->aTransaction[j]->name == c) {
+//                Connect cNode;
+//                cNode.i = j;
+//                cNode.sup = 0;
+//                cNode.name = c;
+//                mining[i].miningList.push_back(cNode);
+//                break;
+//            }
+//        }
     }
 }
 
@@ -115,13 +127,14 @@ Connect *wantCandiItem(DataHead *mining) {
             vector<Connect> *v = &mining[i].miningList;
             int index = (*v)[(*v).size() - 1].i;
 
-            Connect *p = all[i]->aTransaction[index]->cp;
+            Connect *p = all2[i].aTransactions[index].cp;
             while (p != nullptr) {
+                cout << 132 << endl;
 //                Connect c;
 //                c.name = p->name;
 //                c.relation = p->relation;
 
-                string c = to_string(p->relation) + p->name;
+                string c = to_string(p->relation) + p->name1;
 
                 if (confirm.count(c) == 0) {
                     confirm[c] = true;
@@ -143,15 +156,15 @@ Connect *wantCandiItem(DataHead *mining) {
     }
 
     for (auto &iterator: candiItems) {
-        if ((iterator.second / TRANSACTION_NUM) >= 0.5) {
+        if ((iterator.second / TRANSACTION_NUM) >= SUP_LINE) {
             Connect *newC = new Connect;
             //newC->relation = iterator.first.relation;
             char re = *(iterator.first.data());
             newC->relation = atoi(&re);
 
             //newC->name = iterator.first.name;
-            char na = *(iterator.first.data() + 1);
-            newC->name = na;
+
+            newC->name1 =iterator.first.substr(1);
             newC->sup = iterator.second / TRANSACTION_NUM;
             if (newHead == nullptr) {
                 newHead = newC;
@@ -169,9 +182,10 @@ Connect *wantCandiItem(DataHead *mining) {
 int findSpecItem(Connect &connect, DataHead *mining, int i) {
     vector<Connect> *v = &mining[i].miningList;
     int index = (*v)[(*v).size() - 1].i;
-    Connect *p = all[i]->aTransaction[index]->cp;
+    Connect *p = all2[i].aTransactions[index].cp;
     while (p != nullptr) {
-        if (p->relation == connect.relation && p->name == connect.name) {
+        cout << 187 << endl;
+        if (p->relation == connect.relation && p->name1 == connect.name1) {
             return p->i;
         }
         p = p->next;
@@ -183,8 +197,11 @@ bool cmpTransaction(int i, DataHead *mining, int index) {
     Complete *p = rulesHead;
     CompleteHead *pH = nullptr;
     while (p != nullptr) {
+        cout << 200 << endl;
         pH = p->head;
         while (pH != nullptr) {
+            cout << 203 << endl;
+
             if (pH->index == i) {
                 int j = 0;
                 double maxSupComplete = 0;
@@ -226,6 +243,7 @@ void chooseNext(Connect *head, DataHead *mining) {
     CompleteNode *pValid = nullptr;
     bool hasCandiValid = false;   //记录节点的候选集添加后置信度是否都不够，true表示有一条够，否则就当前作为规则
     while (p != nullptr) {
+        cout << 246 << endl;
 
         double conf = 0; //记录这一条线的置信度
 
@@ -234,8 +252,8 @@ void chooseNext(Connect *head, DataHead *mining) {
 
                 if (mining[i].miningList.size() == 1) {   //单个job的时候，找下一个关系
                     int origin = mining[i].miningList[0].i;
-                    for (int j = mining[i].miningList[0].i; j < all[i]->num; ++j) {
-                        if (all[i]->aTransaction[j]->name == mining[i].miningList[0].name) {
+                    for (int j = mining[i].miningList[0].i; j < all2[i].aTransactions.size(); ++j) {
+                        if (all2[i].aTransactions[j].name1 == mining[i].miningList[0].name1) {
                             mining[i].miningList[0].i = j;
                         }
                         if (findSpecItem(*p, mining, i) != -1)
@@ -277,6 +295,7 @@ void chooseNext(Connect *head, DataHead *mining) {
             pValid = changeValid;
             CompleteNode *pFree = pValid;
             while (true) {
+                cout << 298 << endl;
                 if (pValid != nullptr) {
                     mining[pValid->i].isValid = true;
                     pValid = pValid->next;
@@ -294,6 +313,7 @@ void chooseNext(Connect *head, DataHead *mining) {
             //计算置信度，判断是否继续挖掘
             int idx = 0;
             while (!mining[idx].isValid) {
+                cout << 316 << endl;
                 idx ++;
             }
             double maxSup = 0;
@@ -310,7 +330,7 @@ void chooseNext(Connect *head, DataHead *mining) {
                         Connect connect;
                         connect.sup = p->sup;
                         connect.i = nextP;
-                        connect.name = p->name;
+                        connect.name1 = p->name1;
                         connect.relation = p->relation;
                         mining[i].miningList.push_back(connect);
                     }
@@ -337,6 +357,7 @@ void chooseNext(Connect *head, DataHead *mining) {
         pValid = changeValid;
         CompleteNode *pFree = pValid;
         while (true) {
+            cout << 360 << endl;
             if (pValid != nullptr) {
                 mining[pValid->i].isValid = true;
                 pValid = pValid->next;
@@ -380,7 +401,7 @@ void addNewRule(DataHead *mining) {
                     Connect connect;
                     connect.sup = j.sup;
                     connect.i = j.i;
-                    connect.name = j.name;
+                    connect.name1 = j.name1;
                     connect.relation = j.relation;
                     cHead->oneRule.push_back(connect);
                 }
@@ -399,8 +420,8 @@ void addNewRule(DataHead *mining) {
 int main() {
     fill();
 
-    for (char i: freq1tem) {
-        doDM(i);
+    for (string name: freqItems) {
+        doDM(name);
     }
 
     saveRules();
