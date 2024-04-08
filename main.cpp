@@ -29,9 +29,9 @@ void doDM(string name) {
         //vector<Connect> *v = &mining[i].miningList;
         //int index = mining[i].miningList[0].i;
 
-        for (int j = 0; j < all2[i].aTransactions.size(); ++j) {
-            if (all2[i].aTransactions[j].name1 == mining[i].miningList[0].name1) {
-                Connect *p = all2[i].aTransactions[j].cp;
+        for (int j = 0; j < all2[i].seqJobs.size(); ++j) {
+            if (all2[i].seqJobs[j].name1 == mining[i].miningList[0].name1) {
+                Connect *p = all2[i].seqJobs[j].cp;
                 while (p != nullptr) {
 //                Connect connect;
 //                connect.name = p->name;
@@ -86,10 +86,10 @@ void doDM(string name) {
 
 void findFirstNode(DataHead *mining, string name) {
     for (int i = 0; i < TRANSACTION_NUM; ++i) {
-        int num = all2[i].aTransactions.size();    //每行事务集的项集数量
+        int num = all2[i].seqJobs.size();    //每行事务集的项集数量
 
         for (int j = 0; j < num; ++j) {
-            if (all2[i].aTransactions[j].name1 == name) {
+            if (all2[i].seqJobs[j].name1 == name) {
                 Connect cNode;
                 cNode.i = j;
                 cNode.sup = 0;
@@ -98,17 +98,6 @@ void findFirstNode(DataHead *mining, string name) {
                 break;
             }
         }
-
-//        for (int j = 0; j < num; ++j) {
-//            if (all[i]->aTransaction[j]->name == c) {
-//                Connect cNode;
-//                cNode.i = j;
-//                cNode.sup = 0;
-//                cNode.name = c;
-//                mining[i].miningList.push_back(cNode);
-//                break;
-//            }
-//        }
     }
 }
 
@@ -127,7 +116,7 @@ Connect *wantCandiItem(DataHead *mining) {
             vector<Connect> *v = &mining[i].miningList;
             int index = (*v)[(*v).size() - 1].i;
 
-            Connect *p = all2[i].aTransactions[index].cp;
+            Connect *p = all2[i].seqJobs[index].cp;
             while (p != nullptr) {
                 cout << 132 << endl;
 //                Connect c;
@@ -182,13 +171,23 @@ Connect *wantCandiItem(DataHead *mining) {
 int findSpecItem(Connect &connect, DataHead *mining, int i) {
     vector<Connect> *v = &mining[i].miningList;
     int index = (*v)[(*v).size() - 1].i;
-    Connect *p = all2[i].aTransactions[index].cp;
+    Connect *p = all2[i].seqJobs[index].cp;
     while (p != nullptr) {
         cout << 187 << endl;
         if (p->relation == connect.relation && p->name1 == connect.name1) {
             return p->i;
         }
         p = p->next;
+    }
+    return -1;
+}
+
+int findSpecItem(int relation, string name, Transaction &transaction, int x) {
+    int next = transaction.seqJobs[x].nextSpecItems[relation];
+    while (next != -1) {
+        if (transaction.seqJobs[next].name1 == name)
+            return next;
+        next = transaction.seqJobs[next].nextSpecItems[relation];
     }
     return -1;
 }
@@ -252,8 +251,8 @@ void chooseNext(Connect *head, DataHead *mining) {
 
                 if (mining[i].miningList.size() == 1) {   //单个job的时候，找下一个关系
                     int origin = mining[i].miningList[0].i;
-                    for (int j = mining[i].miningList[0].i; j < all2[i].aTransactions.size(); ++j) {
-                        if (all2[i].aTransactions[j].name1 == mining[i].miningList[0].name1) {
+                    for (int j = mining[i].miningList[0].i; j < all2[i].seqJobs.size(); ++j) {
+                        if (all2[i].seqJobs[j].name1 == mining[i].miningList[0].name1) {
                             mining[i].miningList[0].i = j;
                         }
                         if (findSpecItem(*p, mining, i) != -1)

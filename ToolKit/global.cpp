@@ -4,7 +4,7 @@
 
 int TRANSACTION_NUM = 0;
 vector<string> freqItems;
-vector<Node> all2;
+vector<Transaction> all2;
 Complete *rulesHead = nullptr;
 Complete *rulesTail = nullptr;
 

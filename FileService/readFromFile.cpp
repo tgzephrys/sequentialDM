@@ -36,14 +36,14 @@ void fill() {
     vector<string> vec = split(lastLine, ',');
     TRANSACTION_NUM = stoi(vec[1]);
 
-    all2 = vector<Node> (TRANSACTION_NUM);
+    all2 = vector<Transaction> (TRANSACTION_NUM);
 
     fileStream.clear();
     fileStream.seekg(fileStream.beg);
 
     string line;
     getline(fileStream, line);
-    vector<Node>::iterator nodeItr = all2.begin();
+    vector<Transaction>::iterator transactionsItr = all2.begin();
 
     set<string> rowItems;
     map<string, int> allItems;
@@ -51,20 +51,31 @@ void fill() {
     while (getline(fileStream, line) && !line.empty()) {
         if (line.substr(0, 7) == "lq_name") {
 
-            for (vector<seqJob>::iterator itr1 = nodeItr->aTransactions.begin(); itr1 != nodeItr->aTransactions.end(); itr1++ ) {
+            for (vector<seqJob>::iterator itr1 = transactionsItr->seqJobs.begin(); itr1 != transactionsItr->seqJobs.end(); itr1++ ) {
                 Connect *p = itr1 -> cp;
 
-                for (vector<seqJob>::iterator itr2 = itr1 + 1; itr2 != nodeItr->aTransactions.end(); itr2++) {
-                    Connect *c = new Connect;
-                    c->relation = calcRelation(*itr1, *itr2);
-                    c->i = itr2 - nodeItr->aTransactions.begin();
-                    c->name1 = itr2->name1;
-                    if (p == nullptr) {
-                        itr1->cp = c;
-                        p = itr1->cp;
-                    } else {
-                        p->next = c;
-                        p = p->next;
+                for (vector<seqJob>::iterator itr2 = itr1 + 1; itr2 != transactionsItr->seqJobs.end(); itr2++) {
+//                    Connect *c = new Connect;
+//                    c->relation = calcRelation(*itr1, *itr2);
+//                    c->i = itr2 - transactionsItr->seqJobs.begin();
+//                    c->name1 = itr2->name1;
+//                    if (p == nullptr) {
+//                        itr1->cp = c;
+//                        p = itr1->cp;
+//                    } else {
+//                        p->next = c;
+//                        p = p->next;
+//                    }
+                    bool allHasNext = true;
+                    for (int idx: itr1->nextSpecItems) {
+                        if (idx == -1)
+                            allHasNext = false;
+                    }
+                    if (allHasNext) break;
+
+                    int relation = calcRelation(*itr1, *itr2);
+                    if (itr1->nextSpecItems[relation] == -1) {
+                        itr1->nextSpecItems[relation] = itr2 - transactionsItr->seqJobs.begin();
                     }
                 }
             }
@@ -74,7 +85,7 @@ void fill() {
             }
 
             rowItems.clear();
-            nodeItr++;
+            transactionsItr++;
             continue;
         }
 
@@ -90,10 +101,10 @@ void fill() {
         if (jobVec[6].empty()) { job.endTime = INT_MAX; }
         else { job.endTime = stoi(jobVec[6]); }
 
-        nodeItr->aTransactions.push_back(job);
+        transactionsItr->seqJobs.push_back(job);
     }
     for (map<string, int>::iterator itr = allItems.begin(); itr != allItems.end(); itr++) {
-        if ((itr->second / (float) TRANSACTION_NUM) >= LINE)
+        if (((float )itr->second / (float)TRANSACTION_NUM) >= LINE)
             freqItems.push_back(itr->first);
     }
 
@@ -126,7 +137,7 @@ void fill() {
 //            }
 //
 //            if (innerI == 0) {
-//                Node* node = new Node;
+//                Transaction* node = new Transaction;
 //                all[index] = node;
 //                TRANSACTION_NUM++;
 //            }

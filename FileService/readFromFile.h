@@ -2,7 +2,7 @@
 #define SEQUENTIALDM_READFROMFILE_H
 
 #include <fstream>
-#include "../Model/node.h"
+#include "../Model/Transaction.h"
 #include "../Model/seqJob.h"
 #include <string>
 
